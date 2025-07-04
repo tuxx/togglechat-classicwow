@@ -1,0 +1,5 @@
+package-as: ToggleChatVisibility
+
+ignore:
+    - logo.png
+    - package.sh
