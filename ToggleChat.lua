@@ -84,6 +84,57 @@ function addon:RestoreChatFrameSettings()
     end
 end
 
+-- Force hide all chat frames (used when chat should be hidden)
+function addon:ForceHideChatFrames()
+    local chatFrames = addon:GetChatFrames()
+    for i, chatFrame in ipairs(chatFrames) do
+        chatFrame:Hide()
+        local tab = _G["ChatFrame" .. i .. "Tab"]
+        if tab then tab:Hide() end
+    end
+end
+
+-- Hook chat frame show/hide methods
+function addon:HookChatFrames()
+    local chatFrames = addon:GetChatFrames()
+    
+    for i, chatFrame in ipairs(chatFrames) do
+        -- Store original methods
+        if not chatFrame.originalShow then
+            chatFrame.originalShow = chatFrame.Show
+            chatFrame.originalHide = chatFrame.Hide
+        end
+        
+        -- Override Show method
+        chatFrame.Show = function(self, ...)
+            if not ToggleChatDB.showChat then
+                -- Chat should be hidden, don't show it
+                return
+            end
+            return chatFrame.originalShow(self, ...)
+        end
+        
+        -- Override Hide method (keep original behavior)
+        chatFrame.Hide = function(self, ...)
+            return chatFrame.originalHide(self, ...)
+        end
+    end
+end
+
+-- Unhook chat frame methods (for cleanup)
+function addon:UnhookChatFrames()
+    local chatFrames = addon:GetChatFrames()
+    
+    for i, chatFrame in ipairs(chatFrames) do
+        if chatFrame.originalShow then
+            chatFrame.Show = chatFrame.originalShow
+            chatFrame.Hide = chatFrame.originalHide
+            chatFrame.originalShow = nil
+            chatFrame.originalHide = nil
+        end
+    end
+end
+
 -- Toggle chat visibility
 function addon:ToggleChat()
     local chatFrames = addon:GetChatFrames()
@@ -96,6 +147,8 @@ function addon:ToggleChat()
         end
         ToggleChatDB.showChat = false
     else
+        -- Temporarily unhook to allow showing
+        addon:UnhookChatFrames()
         for i, chatFrame in ipairs(chatFrames) do
             chatFrame:Show()
             local tab = _G["ChatFrame" .. i .. "Tab"]
@@ -103,6 +156,8 @@ function addon:ToggleChat()
         end
         addon:RestoreChatFrameSettings()
         ToggleChatDB.showChat = true
+        -- Re-hook after showing
+        addon:HookChatFrames()
     end
 end
 
@@ -132,6 +187,7 @@ end
 -- Event handling
 frame:RegisterEvent("ADDON_LOADED")
 frame:RegisterEvent("PLAYER_LOGIN")
+frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 frame:SetScript("OnEvent", function(self, event, ...)
     if event == "ADDON_LOADED" then
@@ -144,8 +200,15 @@ frame:SetScript("OnEvent", function(self, event, ...)
             if not ToggleChatDB.chatFrameSettings or not next(ToggleChatDB.chatFrameSettings) then
                 addon:SaveChatFrameSettings()
             end
+            -- Hook chat frames after initial setup
+            addon:HookChatFrames()
         end)
         print("|cFF00FF00[ToggleChat]|r Loaded. Use /togglechat or /tc to toggle chat visibility.")
         print("|cFF00FF00[ToggleChat]|r Type /togglechat help for more commands.")
+    elseif event == "PLAYER_ENTERING_WORLD" then
+        -- Re-hook chat frames when entering world (in case new frames were created)
+        C_Timer.After(1, function()
+            addon:HookChatFrames()
+        end)
     end
 end) 
