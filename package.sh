@@ -11,6 +11,7 @@ echo "Creating CurseForge package for ${ADDON_NAME} v${VERSION}..."
 
 # Create a temporary directory for packaging
 TEMP_DIR=$(mktemp -d)
+CURRENT_DIR=$(pwd)
 PACKAGE_DIR="${TEMP_DIR}/${ADDON_NAME}"
 
 # Create the addon directory structure
@@ -26,7 +27,7 @@ cd "${TEMP_DIR}"
 zip -r "${PACKAGE_NAME}" "${ADDON_NAME}/"
 
 # Move the zip file to the current directory
-mv "${PACKAGE_NAME}" "$(pwd)"
+mv "${PACKAGE_NAME}" "${CURRENT_DIR}"
 
 # Clean up
 rm -rf "${TEMP_DIR}"
