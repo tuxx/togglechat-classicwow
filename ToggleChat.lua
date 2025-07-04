@@ -47,8 +47,10 @@ function addon:SaveChatFrameSettings()
     local chatFrames = addon:GetChatFrames()
     
     for i, chatFrame in ipairs(chatFrames) do
+        local tab = _G["ChatFrame" .. i .. "Tab"]
         ToggleChatDB.chatFrameSettings[i] = {
-            isVisible = chatFrame:IsVisible()
+            isVisible = chatFrame:IsVisible(),
+            tabIsVisible = tab and tab:IsShown() or false
         }
         -- In Classic, we'll just save the visibility state
     end
@@ -64,11 +66,19 @@ function addon:RestoreChatFrameSettings()
     
     for i, chatFrame in ipairs(chatFrames) do
         local settings = ToggleChatDB.chatFrameSettings[i]
+        local tab = _G["ChatFrame" .. i .. "Tab"]
         if settings then
             if settings.isVisible then
                 chatFrame:Show()
             else
                 chatFrame:Hide()
+            end
+            if tab then
+                if settings.tabIsVisible then
+                    tab:Show()
+                else
+                    tab:Hide()
+                end
             end
         end
     end
@@ -79,13 +89,17 @@ function addon:ToggleChat()
     local chatFrames = addon:GetChatFrames()
     if ToggleChatDB.showChat then
         addon:SaveChatFrameSettings()
-        for _, chatFrame in ipairs(chatFrames) do
+        for i, chatFrame in ipairs(chatFrames) do
             chatFrame:Hide()
+            local tab = _G["ChatFrame" .. i .. "Tab"]
+            if tab then tab:Hide() end
         end
         ToggleChatDB.showChat = false
     else
-        for _, chatFrame in ipairs(chatFrames) do
+        for i, chatFrame in ipairs(chatFrames) do
             chatFrame:Show()
+            local tab = _G["ChatFrame" .. i .. "Tab"]
+            if tab then tab:Show() end
         end
         addon:RestoreChatFrameSettings()
         ToggleChatDB.showChat = true
