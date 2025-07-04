@@ -1,0 +1,8 @@
+## Interface: 11507
+## Title: ToggleChat
+## Notes: Toggle chat windows visibility with a keybinding
+## Author: Your Name
+## Version: 1.0.0
+## SavedVariables: ToggleChatDB
+
+ToggleChat.lua 

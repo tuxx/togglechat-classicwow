@@ -1,0 +1,3 @@
+<Bindings>
+    <Binding name="TOGGLECHAT_TOGGLE" header="TOGGLECHAT" category="ToggleChat">ToggleChat_Toggle()</Binding>
+</Bindings> 
