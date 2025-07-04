@@ -1,8 +1,12 @@
 ## Interface: 11507
-## Title: ToggleChat
+## Title: ToggleChatVisibility
 ## Notes: Toggle chat windows visibility with a keybinding
-## Author: Your Name
+## Author: Tuxx
 ## Version: 1.0.0
 ## SavedVariables: ToggleChatDB
+## Website: https://github.com/tuxx/togglechat-classicwow
+## X-Category: Chat
+## X-Website: https://github.com/tuxx/togglechat-classicwow
+## X-Curse-Project-ID: [Will be filled by CurseForge]
 
-ToggleChat.lua 
+ToggleChat.lua
