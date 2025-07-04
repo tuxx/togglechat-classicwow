@@ -3,7 +3,8 @@
 # ToggleChat CurseForge Package Script
 # This script creates a zip file ready for CurseForge upload
 
-VERSION="1.0.0"
+# Extract version from TOC file
+VERSION=$(grep "^## Version:" ToggleChat.toc | cut -d' ' -f3)
 ADDON_NAME="ToggleChatVisibility"
 PACKAGE_NAME="${ADDON_NAME}-${VERSION}.zip"
 
