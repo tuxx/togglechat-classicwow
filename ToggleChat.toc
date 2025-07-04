@@ -2,7 +2,7 @@
 ## Title: ToggleChatVisibility
 ## Notes: Toggle chat windows visibility with a keybinding
 ## Author: Tuxx
-## Version: 1.0.1
+## Version: 1.0.2
 ## SavedVariables: ToggleChatDB
 ## Website: https://github.com/tuxx/togglechat-classicwow
 ## X-Category: Chat
